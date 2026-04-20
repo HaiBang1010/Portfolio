@@ -104,6 +104,41 @@ Create `src/data/` with:
 - `experience.ts` — Work experience entries (Ky Luc, Teky Academy)
 - `metadata.ts` — Personal info, social links, taglines
 
+## Project Structure
+
+```
+portfolio/
+├── public/
+│   └── assets/
+│       ├── TPHB_FE.pdf              # Resume/CV
+│       └── www.stefantopalovic.com_.png  # Design reference
+├── src/
+│   ├── app/
+│   │   ├── fonts/                   # Geist font files (VF woff)
+│   │   ├── favicon.ico
+│   │   ├── globals.css              # Global styles & Tailwind imports
+│   │   ├── layout.tsx               # Root layout (metadata, fonts)
+│   │   └── page.tsx                 # Home page (assembles all sections)
+│   ├── components/
+│   │   ├── Experience.tsx           # Work experience section
+│   │   ├── Hero.tsx                 # Hero/landing section
+│   │   ├── Navbar.tsx               # Sticky navigation bar
+│   │   └── Projects.tsx             # Featured projects section
+│   └── data/
+│       ├── experience.ts            # Work experience entries
+│       ├── metadata.ts              # Personal info & social links
+│       ├── projects.ts              # Featured project data
+│       └── skills.ts                # Technical skills list
+├── .eslintrc.json
+├── .gitignore
+├── CLAUDE.md
+├── next.config.mjs
+├── package.json
+├── postcss.config.mjs
+├── tailwind.config.ts
+└── tsconfig.json
+```
+
 ## Code Conventions
 
 - Components in `src/components/` — one folder per component with `index.tsx`
