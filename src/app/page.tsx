@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Hero from "@/components/Hero";
 import Experience from "@/components/Experience";
 import Projects from "@/components/Projects";

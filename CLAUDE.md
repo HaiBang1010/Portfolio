@@ -2,6 +2,7 @@
 
 ## Project Overview
 
+
 **Tran Phan Hai Bang** — Frontend Developer Portfolio. A modern, minimalist showcase of frontend engineering skills with smooth animations and interactive experiences. Design inspired by [stefantopalovic.com](https://www.stefantopalovic.com).
 
 **Key Info:**
@@ -195,9 +196,13 @@ pnpm preview      # Preview production build locally
 
 - **Language:** All content and code comments in English (international audience)
 - **Visual Priority:** Every pixel matters — prioritize smoothness and impact over feature count
-- **No UI Libraries:** Build all components from scratch (no shadcn, MUI) — this demonstrates CSS & component design skills
 - **Animation Quality:** Use easing for natural motion, stagger for sequences, respect prefers-reduced-motion
 - **Mobile First:** Design responsive from smallest viewport up
 - **Type Safety:** Strict TypeScript, no `any` types
 - **Assets:** Store in `public/` or optimize with Next.js Image
 - **Accessibility:** WCAG 2.1 AA compliant, semantic markup, keyboard navigation
+
+---
+name: context7-mcp
+description: use context7 to check up to date docs when needed for implementing new librearies or frameworks, or adding features using them  
+---claud

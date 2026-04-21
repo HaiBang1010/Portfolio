@@ -1,38 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Github } from "lucide-react";
 import { projects } from "@/data/projects";
-
-const GithubIcon = () => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-  </svg>
-);
-// const ExternalLinkIcon = () => (
-//   <svg
-//     width="16"
-//     height="16"
-//     viewBox="0 0 24 24"
-//     fill="none"
-//     stroke="currentColor"
-//     strokeWidth="2"
-//     strokeLinecap="round"
-//     strokeLinejoin="round"
-//   >
-//     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-//     <polyline points="15 3 21 3 21 9"></polyline>
-//     <line x1="10" y1="14" x2="21" y2="3"></line>
-//   </svg>
-// );
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export default function Projects() {
   return (
@@ -41,59 +20,51 @@ export default function Projects() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
-        className="text-base md:text-lg font-bold tracking-widest uppercase text-zinc-500 mb-12 font-mono"
+        className="text-base md:text-lg font-bold tracking-widest uppercase text-muted-foreground mb-12 font-mono"
       >
         Projects
       </motion.h2>
 
-      <div className="w-full flex flex-col gap-24">
+      <div className="w-full flex flex-col gap-8">
         {projects.map((project, index) => (
           <motion.div
             key={project.id}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-            className="w-full flex flex-col"
+            transition={{ duration: 0.6, delay: index * 0.1 }}
           >
-            {/* <div className="w-full aspect-video md:aspect-[21/9] bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden mb-8 relative group">
-               
-              <div className="absolute inset-0 flex items-center justify-center text-zinc-700 font-mono text-sm">
-                Project Preview
-              </div>
-              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity bg-zinc-800/80 p-2 rounded-full backdrop-blur-sm cursor-pointer hover:bg-zinc-700 text-zinc-300">
-                <ExternalLinkIcon />
-              </div>
-            </div> */}
+            <Card className="bg-card/40 hover:border-foreground/20 transition-colors">
+              <CardHeader>
+                <CardTitle className="text-3xl md:text-4xl font-bold font-mono tracking-wide">
+                  {project.title.toUpperCase()}
+                </CardTitle>
+                <CardDescription className="text-base md:text-lg leading-relaxed">
+                  {project.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-6">
+                <div className="flex flex-wrap gap-2">
+                  {project.techStack.map((tech) => (
+                    <Badge
+                      key={tech}
+                      variant="outline"
+                      className="h-auto px-4 py-1.5 rounded-full bg-card/50 text-sm font-medium"
+                    >
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
 
-            <div className="rounded-lg border border-slate-400 p-5 ">
-              <h3 className="text-3xl md:text-4xl font-bold font-mono tracking-wide mb-4">
-                {project.title.toUpperCase()}
-              </h3>
-              <p className="text-zinc-300 text-base md:text-lg leading-relaxed mb-6">
-                {project.description}
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-8">
-                {project.techStack.map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-4 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/50 text-sm text-zinc-300 font-medium"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-4">
-                <a
-                  href={project.github}
-                  className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 hover:text-white transition-colors text-base text-zinc-300 font-medium"
-                >
-                  <GithubIcon /> Source Code
-                </a>
-              </div>
-            </div>
+                <div className="flex items-center gap-4">
+                  <Button asChild variant="outline" size="lg" className="rounded-full">
+                    <a href={project.github} target="_blank" rel="noreferrer">
+                      <Github /> Source Code
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
         ))}
       </div>
