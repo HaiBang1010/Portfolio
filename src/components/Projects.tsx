@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github } from "lucide-react";
+import { Github, Calendar, User } from "lucide-react"; // Thêm icon cho sinh động
 import { projects } from "@/data/projects";
 import {
   Card,
@@ -34,15 +34,34 @@ export default function Projects() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
           >
-            <Card className="bg-card/40 hover:border-foreground/20 transition-colors">
-              <CardHeader>
-                <CardTitle className="text-3xl md:text-4xl font-bold font-mono tracking-wide">
-                  {project.title.toUpperCase()}
-                </CardTitle>
-                <CardDescription className="text-base md:text-lg leading-relaxed">
+            <Card className="bg-card/40 hover:border-foreground/20 transition-colors overflow-hidden">
+              <CardHeader className="pb-4">
+                <div className="flex flex-col gap-1">
+                  {/* Hiển thị Subtitle phía trên Title */}
+                  <span className="text-primary font-mono text-sm font-semibold tracking-wider">
+                    {project.subtitle}
+                  </span>
+                  
+                  <CardTitle className="text-3xl md:text-4xl font-bold font-mono tracking-wide">
+                    {project.title.toUpperCase()}
+                  </CardTitle>
+
+                  {/* Hiển thị Period và Role */}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-sm text-muted-foreground font-mono">
+                    <span className="flex items-center gap-1.5">
+                      <Calendar className="w-4 h-4" /> {project.period}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <User className="w-4 h-4" /> {project.role}
+                    </span>
+                  </div>
+                </div>
+
+                <CardDescription className="text-base md:text-lg leading-relaxed mt-4">
                   {project.description}
                 </CardDescription>
               </CardHeader>
+
               <CardContent className="flex flex-col gap-6">
                 <div className="flex flex-wrap gap-2">
                   {project.techStack.map((tech) => (
@@ -59,7 +78,7 @@ export default function Projects() {
                 <div className="flex items-center gap-4">
                   <Button asChild variant="outline" size="lg" className="rounded-full">
                     <a href={project.github} target="_blank" rel="noreferrer">
-                      <Github /> Source Code
+                      <Github className="mr-2 h-5 w-5" /> Source Code
                     </a>
                   </Button>
                 </div>
