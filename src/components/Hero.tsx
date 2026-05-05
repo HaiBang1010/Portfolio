@@ -5,7 +5,7 @@ import Image from "next/image";
 import { MapPin, Linkedin, Github } from "lucide-react";
 import { skills } from "@/data/skills";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Hero() {
@@ -34,10 +34,15 @@ export default function Hero() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="relative mb-8"
       >
-        <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-tr from-orange-400 via-pink-500 to-blue-500">
+        <div className="w-48 h-48 rounded-full p-1 bg-gradient-to-tr from-orange-400 via-pink-500 to-blue-500">
           <Avatar className="w-full h-full border-4 border-background">
+            <AvatarImage
+              src="/assets/avt1.jpg"
+              alt="Tran Phan Hai Bang"
+              className="object-cover"
+            />
             <AvatarFallback className="bg-zinc-900 text-zinc-500 text-sm">
-              Avatar
+              TPHB
             </AvatarFallback>
           </Avatar>
         </div>
