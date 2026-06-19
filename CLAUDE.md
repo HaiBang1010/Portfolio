@@ -48,7 +48,7 @@
 4. **Featured Projects** — 2-3 showcase projects with images, tech stack, descriptions
    - Charity NFT Marketplace (NextJS, Solidity, ERC-4337)
    - Good Things (MERN Stack)
-   - ChatChit (NextJS, ASP.NET Core 6)
+   - Beng — Social Media Platform (React, Node/Express, Prisma, LiveKit)
 5. **Archive / All Work** — Grid or table of all projects/assignments
 6. **Contact** — Simple form or links (email, social, GitHub)
 

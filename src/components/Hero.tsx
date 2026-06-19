@@ -55,7 +55,7 @@ export default function Hero() {
         className="max-w-2xl mb-8"
       >
         <h1 className="text-4xl md:text-5xl font-bold leading-tight text-gradient mb-6">
-          Hey, I&apos;m Hai Bang. I&apos;m a Frontend <br /> Software Developer.
+          Hi, I&apos;m Hai Bang. I&apos;m a Software Developer.
           <Badge
             variant="outline"
             className="ml-4 h-auto px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-sm border-green-500/20 align-middle"
@@ -64,6 +64,12 @@ export default function Hero() {
             Open to work
           </Badge>
         </h1>
+
+        <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl mb-8">
+          My goal is to grow into a professional frontend developer — crafting
+          fast, accessible, and beautifully animated interfaces that turn complex
+          ideas into products people love to use.
+        </p>
 
         <div className="flex flex-wrap items-center gap-6 text-muted-foreground text-sm">
           <div className="flex items-center gap-2">

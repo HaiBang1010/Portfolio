@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Calendar, User } from "lucide-react"; // Thêm icon cho sinh động
+import { Github, Calendar, User, ExternalLink } from "lucide-react"; // Thêm icon cho sinh động
 import { projects } from "@/data/projects";
 import {
   Card,
@@ -63,6 +63,15 @@ export default function Projects() {
               </CardHeader>
 
               <CardContent className="flex flex-col gap-6">
+                <ul className="flex flex-col gap-2 text-sm md:text-base text-muted-foreground">
+                  {project.highlights.map((point) => (
+                    <li key={point} className="flex gap-2">
+                      <span className="text-primary mt-1 shrink-0">▹</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+
                 <div className="flex flex-wrap gap-2">
                   {project.techStack.map((tech) => (
                     <Badge
@@ -75,12 +84,19 @@ export default function Projects() {
                   ))}
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-4">
                   <Button asChild variant="outline" size="lg" className="rounded-full">
                     <a href={project.github} target="_blank" rel="noreferrer">
                       <Github className="mr-2 h-5 w-5" /> Source Code
                     </a>
                   </Button>
+                  {project.live && project.live !== "#" && (
+                    <Button asChild size="lg" className="rounded-full">
+                      <a href={project.live} target="_blank" rel="noreferrer">
+                        <ExternalLink className="mr-2 h-5 w-5" /> Live Demo
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
