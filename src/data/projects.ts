@@ -75,7 +75,7 @@ export const projects: Project[] = [
       "PostgreSQL",
     ],
     image: "/assets/project1.jpg",
-    github: "#",
+    github: "https://github.com/ArtChain-NFT",
     live: "#",
     featured: true,
     tags: ["Blockchain", "Full-stack", "Thesis"],
