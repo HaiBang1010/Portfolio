@@ -22,12 +22,12 @@ export const projects: Project[] = [
     period: "May 2026 — Jun 2026",
     role: "Full-stack Developer",
     description:
-      "Production-grade, Instagram-style social platform built end-to-end. Real-time messaging with voice notes & GIFs, audio/video calls via LiveKit, Instagram-style Stories with music stickers (iTunes API), a mixed-source feed algorithm, and secure JWT auth with httpOnly cookies. Deployed to production on Vercel + Railway with Backblaze B2 storage.",
+      "Production-grade, Instagram-style social platform built end-to-end. Real-time messaging with voice notes & GIFs, audio/video calls via LiveKit, Instagram-style Stories with music stickers (iTunes API), a mixed-source feed algorithm, and secure JWT auth with httpOnly cookies. Deployed to production on Vercel + Railway with Cloudflare (S3-compatible) media storage.",
     highlights: [
       "Real-time messaging with voice notes & GIFs, plus 1:1 audio/video calls powered by LiveKit Cloud.",
       "Instagram-style Stories with music stickers (iTunes API) and a mixed-source feed algorithm.",
       "Secure JWT auth via httpOnly cookies across a fully typed React + Node/Express/Prisma stack.",
-      "Shipped to production on Vercel + Railway with Backblaze B2 (S3-compatible) media storage.",
+      "Shipped to production on Vercel + Railway with Cloudflare (S3-compatible) media storage.",
     ],
     techStack: [
       "React 18",
