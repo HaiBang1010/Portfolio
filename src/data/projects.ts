@@ -16,6 +16,38 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: "gub",
+    title: "GuB",
+    subtitle: "E-Commerce Platform",
+    period: "May 2026 — Jun 2026",
+    role: "Full-stack Developer",
+    description:
+      "A full-stack e-commerce platform with a customer storefront and admin dashboard — product catalog, search, cart, Stripe payments, realtime chat, and bilingual (EN/VI) support.",
+    highlights: [
+      "Built a modular-monolith backend (NestJS) with PostgreSQL multi-schema isolation and clean module boundaries.",
+      "Storefront with full-text search (pg_trgm), cart, Stripe checkout, i18n (EN/VI), and SEO (per-product metadata + JSON-LD).",
+      "Admin dashboard with analytics, product/order CRUD, and realtime chat via Supabase Broadcast.",
+      "Deployed on a $0 free tier (Vercel + Render + Neon) with Cloudinary image optimization and Google OAuth.",
+    ],
+    techStack: [
+      "Next.js",
+      "React",
+      "NestJS",
+      "TypeScript",
+      "PostgreSQL",
+      "Prisma",
+      "TanStack Query",
+      "Stripe",
+      "Supabase",
+      "Tailwind CSS",
+    ],
+    image: "/assets/gub.jpg",
+    github: "https://github.com/HaiBang1010/GuB-ECommerce",
+    live: "https://gu-b-e.vercel.app",
+    featured: true,
+    tags: ["E-Commerce", "Full-stack", "Real-time"],
+  },
+  {
     id: "beng",
     title: "Beng",
     subtitle: "Social Media Platform",
@@ -79,25 +111,5 @@ export const projects: Project[] = [
     live: "#",
     featured: true,
     tags: ["Blockchain", "Full-stack", "Thesis"],
-  },
-  {
-    id: "good-things",
-    title: "Good Things",
-    subtitle: "Social Network — MERN Stack",
-    period: "Jul 2025 — Sep 2025",
-    role: "Full-stack Developer",
-    description:
-      "A full-stack social network mirroring Facebook's core experience — feed, posts, likes, comments, and smart search — engineered end-to-end with the MERN stack.",
-    highlights: [
-      "Engineered a full-stack social network mirroring Facebook's core features: interactive News Feed, post creation, likes, and comments.",
-      "Optimized search functionality using debounce techniques for responsive, low-latency queries.",
-      "Designed complex relational database schemas for user profiles and social relationships.",
-    ],
-    techStack: ["MongoDB", "Express", "React", "Node.js", "TailwindCSS"],
-    image: "/assets/project2.jpg",
-    github: "#",
-    live: "#",
-    featured: true,
-    tags: ["Full-stack", "Social"],
   },
 ];
