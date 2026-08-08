@@ -10,7 +10,7 @@ export default function Footer() {
 
   return (
     <footer id="contact" className="w-full bg-zinc-950/60">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex flex-col items-start gap-10">
+      <div className="max-w-5xl lg:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-start gap-10">
         <Separator className="bg-border" />
         <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <Button asChild variant="link" className="px-0 h-auto text-lg md:text-xl">

@@ -19,7 +19,7 @@ export const projects: Project[] = [
     id: "gub",
     title: "GuB",
     subtitle: "E-Commerce Platform",
-    period: "May 2026 — Jun 2026",
+    period: "Jun 2026 — Jul 2026",
     role: "Full-stack Developer",
     description:
       "A full-stack e-commerce platform with a customer storefront and admin dashboard — product catalog, search, cart, Stripe payments, realtime chat, and bilingual (EN/VI) support.",
@@ -60,6 +60,7 @@ export const projects: Project[] = [
       "Instagram-style Stories with music stickers (iTunes API) and a mixed-source feed algorithm.",
       "Secure JWT auth via httpOnly cookies across a fully typed React + Node/Express/Prisma stack.",
       "Shipped to production on Vercel + Railway with Cloudflare (S3-compatible) media storage.",
+      "50+ REST endpoints documented via OpenAPI/Swagger.",
     ],
     techStack: [
       "React 18",

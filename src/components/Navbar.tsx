@@ -17,9 +17,9 @@ export default function Navbar() {
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className="fixed top-0 left-0 right-0 z-50 glass"
     >
-      <div className="container mx-auto flex items-center justify-between max-w-4xl px-6 py-4">
+      <div className="w-full mx-auto flex items-center justify-between max-w-5xl lg:max-w-6xl px-4 sm:px-6 lg:px-8 py-4">
         <div className="text-xl font-bold tracking-widest uppercase">
-          Bang Tran
+          Tran Phan Hai Bang
         </div>
         <NavigationMenu>
           <NavigationMenuList className="gap-2">
