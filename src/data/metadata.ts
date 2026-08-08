@@ -28,5 +28,5 @@ export const metadata = {
     thesis:
       "Building a Charity NFT Marketplace using Account Abstraction (ERC-4337) and Gasless Transactions",
   },
-  resumeUrl: "/assets/TPHB_FE.pdf",
+  resumeUrl: "/assets/TranPhanHaiBang_CV_FullstackDeveloper.pdf",
 };
