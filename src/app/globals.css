@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* Required by Lenis: sets html/body height and honours [data-lenis-prevent]. */
+@import "lenis/dist/lenis.css";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -15,8 +15,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // No `scroll-smooth` on <html>: CSS smooth scrolling and Lenis animate the
+  // same scroll position and fight each other on anchor navigation.
   return (
-    <html lang="en" className={cn("scroll-smooth dark", "font-sans", inter.variable)}>
+    <html lang="en" className={cn("dark", "font-sans", inter.variable)}>
       <body
         className={`${inter.className} min-h-screen antialiased selection:bg-green-500 selection:text-white`}
       >
