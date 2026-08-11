@@ -11,7 +11,7 @@ export default function Hero() {
   const { contact } = metadata;
 
   return (
-    <section className="w-full flex flex-col items-start pt-20">
+    <section className="w-full flex flex-col items-start">
       <div className="w-full flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -103,11 +103,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      <div className="w-full mt-12">
-        <h2 className="text-base md:text-lg font-bold tracking-widest uppercase text-muted-foreground mb-8 font-mono">
-          Tech Stack
-        </h2>
-      </div>
     </section>
   );
 }

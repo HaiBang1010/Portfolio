@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Projects() {
   return (
-    <section id="projects" className="w-full flex flex-col items-start pt-20">
+    <section id="projects" className="w-full flex flex-col items-start">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

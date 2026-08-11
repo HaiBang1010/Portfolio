@@ -30,21 +30,36 @@ export default function Home() {
       */}
       <main className="relative flex min-h-screen flex-col items-center">
         <Navbar />
-        <div className="w-full max-w-6xl lg:max-w-7xl px-4 sm:px-6 lg:px-8 py-20 pb-40 flex flex-col items-center">
-          <Hero />
+        {/*
+          Each block gets a screen of its own. `min-h-screen` rather than
+          `h-screen`: Projects runs taller than a viewport on a laptop, and a
+          fixed height would crop it. Short sections still fill the screen;
+          long ones grow instead of clipping.
+        */}
+        <div className="w-full max-w-6xl lg:max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+          <section className="w-full min-h-screen flex flex-col justify-center py-24">
+            <Hero />
+          </section>
 
           {/*
-            The keyboard belongs to the Tech Stack block and scrolls away with
-            it. z-0 keeps it above the particle layer (-z-10); the sections below
-            are z-10 so nothing of it can bleed over their text.
+            z-0 keeps the keyboard above the particle layer (-z-10); the sections
+            below are z-10 so nothing of it can bleed over their text.
           */}
-          <div className="relative z-0 w-full mt-8">
+          <section
+            id="skills"
+            className="relative z-0 w-full min-h-screen flex flex-col justify-center py-16"
+          >
             <SkillsKeyboard />
-          </div>
+          </section>
 
-          <div className="relative z-10 w-full space-y-32 mt-32">
-            <Experience />
-            <Projects />
+          <div className="relative z-10 w-full">
+            <section className="w-full min-h-screen flex flex-col justify-center py-24">
+              <Experience />
+            </section>
+
+            <section className="w-full min-h-screen flex flex-col justify-center py-24">
+              <Projects />
+            </section>
           </div>
         </div>
         <Footer />

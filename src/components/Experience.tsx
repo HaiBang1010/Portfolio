@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function Experience() {
   return (
-    <section id="experience" className="w-full flex flex-col items-start pt-20">
+    <section id="experience" className="w-full flex flex-col items-start">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
