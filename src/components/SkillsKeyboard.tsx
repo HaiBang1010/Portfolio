@@ -32,7 +32,7 @@ const TURN_DURATION_S = 1.2;
  * fixed — neither `setZoom` nor moving the camera object changes the framing —
  * so scaling the model is what actually pulls the outer keys into view.
  */
-const BOARD_SCALE = 0.55;
+const BOARD_SCALE = 0.62;
 
 export default function SkillsKeyboard() {
   const prefersReducedMotion = useReducedMotion();
@@ -186,18 +186,14 @@ export default function SkillsKeyboard() {
   return (
     <div ref={rootRef} className="w-full flex flex-col items-center">
       {/*
-        Width-capped rather than full-bleed: the scene scales to its canvas, so
-        letting the canvas span the container made the board large enough to
-        crowd the sections above and below it.
+        Full-bleed canvas. The scene frames itself to whatever size the canvas
+        is, so a wider canvas crops in on the board — BOARD_SCALE is what pulls
+        the outer keys back into view.
       */}
       <div
         className={cn(
-          "relative w-full mx-auto",
-          // The scene frames itself to the canvas, so a short, wide canvas crops
-          // in on a few keys. Keeping it near-square is what fits the whole board.
-          isMobile
-            ? "max-w-sm h-[300px]"
-            : "max-w-lg lg:max-w-xl h-[440px] lg:h-[500px]",
+          "relative w-full",
+          isMobile ? "h-[320px]" : "h-[520px] lg:h-[600px]",
         )}
       >
         <Suspense fallback={null}>

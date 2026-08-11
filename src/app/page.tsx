@@ -30,7 +30,7 @@ export default function Home() {
       */}
       <main className="relative flex min-h-screen flex-col items-center">
         <Navbar />
-        <div className="w-full max-w-5xl lg:max-w-6xl px-4 sm:px-6 lg:px-8 py-20 pb-40 flex flex-col items-center">
+        <div className="w-full max-w-6xl lg:max-w-7xl px-4 sm:px-6 lg:px-8 py-20 pb-40 flex flex-col items-center">
           <Hero />
 
           {/*

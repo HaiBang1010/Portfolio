@@ -17,7 +17,7 @@ export default function Navbar() {
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className="fixed top-0 left-0 right-0 z-50 glass"
     >
-      <div className="w-full mx-auto flex items-center justify-between max-w-5xl lg:max-w-6xl px-4 sm:px-6 lg:px-8 py-4">
+      <div className="w-full mx-auto flex items-center justify-between max-w-6xl lg:max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
         <div className="text-xl font-bold tracking-widest uppercase">
           Tran Phan Hai Bang
         </div>
