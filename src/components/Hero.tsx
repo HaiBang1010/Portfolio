@@ -90,7 +90,7 @@ export default function Hero() {
             <a
               href={`mailto:${contact.email}`}
               aria-label="Email"
-              className="flex items-center gap-2 hover:text-foreground transition-colors"
+              className="cursor-can-hover flex items-center gap-2 hover:text-foreground transition-colors"
             >
               <Mail className="size-4" />
               Email
@@ -100,7 +100,7 @@ export default function Hero() {
               target="_blank"
               rel="noreferrer"
               aria-label="LinkedIn"
-              className="flex items-center gap-2 hover:text-foreground transition-colors"
+              className="cursor-can-hover flex items-center gap-2 hover:text-foreground transition-colors"
             >
               <Linkedin className="size-4" />
               LinkedIn
@@ -110,7 +110,7 @@ export default function Hero() {
               target="_blank"
               rel="noreferrer"
               aria-label="GitHub"
-              className="flex items-center gap-2 hover:text-foreground transition-colors"
+              className="cursor-can-hover flex items-center gap-2 hover:text-foreground transition-colors"
             >
               <Github className="size-4" />
               GitHub

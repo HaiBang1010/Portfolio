@@ -110,6 +110,24 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/*
+  Hide the native cursor only where the elastic one actually renders: a fine
+  pointer, and no reduced-motion request. Those two conditions mirror the gates
+  in ElasticCursor, so the two can never disagree and leave no cursor at all.
+*/
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html,
+  body {
+    cursor: none;
+  }
+
+  a,
+  button,
+  [role="button"] {
+    cursor: none;
+  }
+}
+
 .text-gradient {
   background: linear-gradient(to right, #fff, #a1a1aa);
   -webkit-background-clip: text;
