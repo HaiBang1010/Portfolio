@@ -27,19 +27,29 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  /*
+    Deep navy rather than neutral grey, matching the 3D-portfolio reference
+    (hsl(222.2 84% 4.9%) converted to oklch). Only the dark palette changes —
+    the :root light values above are untouched.
+  */
+  --background: oklch(0.137 0.036 258.5);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  /*
+    Surfaces carry the same navy hue as --background, only lighter, so panels
+    read as raised rather than as grey patches sitting on a blue page.
+    Foreground tokens stay neutral to keep text contrast unchanged.
+  */
+  --card: oklch(0.205 0.036 258.5);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.205 0.036 258.5);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --primary-foreground: oklch(0.205 0.036 258.5);
+  --secondary: oklch(0.269 0.036 258.5);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
+  --muted: oklch(0.269 0.036 258.5);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(0.269 0.036 258.5);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
@@ -88,7 +98,11 @@
 }
 
 .glass {
-  background: rgba(24, 24, 27, 0.4);
+  /*
+    Tinted from --background rather than a fixed zinc grey, so the navbar keeps
+    matching the page instead of reading as a grey band over the navy.
+  */
+  background: color-mix(in oklab, var(--background) 60%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
