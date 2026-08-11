@@ -42,24 +42,51 @@ export default function Home() {
           </section>
 
           {/*
-            z-0 keeps the keyboard above the particle layer (-z-10); the sections
-            below are z-10 so nothing of it can bleed over their text.
+            One track spanning Tech Stack through Projects. The keyboard sticks
+            to the middle of it, so it stays on screen — and keeps typing — while
+            Experience and Projects scroll over the top.
+
+            The sticky element lives in its own absolutely-positioned layer so it
+            reserves no height of its own; in the normal flow it would push the
+            sections down by a full screen. z-0 keeps it above the particle layer
+            (-z-10) and below the content, which is z-10.
           */}
-          <section
-            id="skills"
-            className="relative z-0 w-full min-h-screen flex flex-col justify-center py-16"
-          >
-            <SkillsKeyboard />
-          </section>
+          <div className="relative w-full">
+            <div className="absolute inset-0 z-0">
+              <div className="sticky top-1/2 -translate-y-1/2">
+                <SkillsKeyboard />
+              </div>
+            </div>
 
-          <div className="relative z-10 w-full">
-            <section className="w-full min-h-screen flex flex-col justify-center py-24">
-              <Experience />
+            {/*
+              The runway the board is centred against: it gets a screen to
+              itself before the sections start scrolling over it. The heading
+              lives here rather than inside the sticky component, which would
+              otherwise carry it down the whole page.
+            */}
+            <section
+              id="skills"
+              className="relative z-10 w-full min-h-screen pt-24 pointer-events-none"
+            >
+              {/*
+                The section spans a full screen directly over the keyboard, so
+                it must not swallow pointer events — hovering a key has to reach
+                the canvas underneath. Only the heading takes them back.
+              */}
+              <h2 className="pointer-events-auto text-base md:text-lg font-bold tracking-widest uppercase text-muted-foreground font-mono">
+                Tech Stack
+              </h2>
             </section>
 
-            <section className="w-full min-h-screen flex flex-col justify-center py-24">
-              <Projects />
-            </section>
+            <div className="relative z-10 w-full">
+              <section className="w-full min-h-screen flex flex-col justify-center py-24">
+                <Experience />
+              </section>
+
+              <section className="w-full min-h-screen flex flex-col justify-center py-24">
+                <Projects />
+              </section>
+            </div>
           </div>
         </div>
         <Footer />
