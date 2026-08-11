@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Calendar, User, ExternalLink } from "lucide-react"; // Thêm icon cho sinh động
+import { Github, Calendar, User, ExternalLink } from "lucide-react";
 import { projects } from "@/data/projects";
 import {
   Card,
@@ -41,7 +41,7 @@ export default function Projects() {
                   <span className="text-primary font-mono text-sm font-semibold tracking-wider">
                     {project.subtitle}
                   </span>
-                  
+
                   <CardTitle className="text-3xl md:text-4xl font-bold font-mono tracking-wide">
                     {project.title.toUpperCase()}
                   </CardTitle>
@@ -85,13 +85,13 @@ export default function Projects() {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-4">
-                  <Button asChild variant="outline" size="lg" className="rounded-full">
+                  <Button asChild variant="outline" size="lg" className="cursor-can-hover rounded-full">
                     <a href={project.github} target="_blank" rel="noreferrer">
                       <Github className="mr-2 h-5 w-5" /> Source Code
                     </a>
                   </Button>
                   {project.live && project.live !== "#" && (
-                    <Button asChild size="lg" className="rounded-full">
+                    <Button asChild size="lg" className="cursor-can-hover rounded-full">
                       <a href={project.live} target="_blank" rel="noreferrer">
                         <ExternalLink className="mr-2 h-5 w-5" /> Live Demo
                       </a>

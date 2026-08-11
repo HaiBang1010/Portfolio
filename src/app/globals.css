@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* Required by Lenis: sets html/body height and honours [data-lenis-prevent]. */
+@import "lenis/dist/lenis.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -27,19 +29,29 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  /*
+    Deep navy rather than neutral grey, matching the 3D-portfolio reference
+    (hsl(222.2 84% 4.9%) converted to oklch). Only the dark palette changes —
+    the :root light values above are untouched.
+  */
+  --background: oklch(0.137 0.036 258.5);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  /*
+    Surfaces carry the same navy hue as --background, only lighter, so panels
+    read as raised rather than as grey patches sitting on a blue page.
+    Foreground tokens stay neutral to keep text contrast unchanged.
+  */
+  --card: oklch(0.205 0.036 258.5);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.205 0.036 258.5);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --primary-foreground: oklch(0.205 0.036 258.5);
+  --secondary: oklch(0.269 0.036 258.5);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
+  --muted: oklch(0.269 0.036 258.5);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(0.269 0.036 258.5);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
@@ -76,8 +88,18 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /*
+    The base colour lives on <html>, not <body>. The Particles layer is fixed at
+    -z-10, so an opaque body background would paint straight over it. Keeping the
+    colour one level up means the page still has a solid backdrop before the
+    canvas paints, without hiding it afterwards.
+  */
+  html {
+    @apply bg-background;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: transparent;
     overflow-x: hidden;
   }
 }
@@ -88,10 +110,32 @@
 }
 
 .glass {
-  background: rgba(24, 24, 27, 0.4);
+  /*
+    Tinted from --background rather than a fixed zinc grey, so the navbar keeps
+    matching the page instead of reading as a grey band over the navy.
+  */
+  background: color-mix(in oklab, var(--background) 60%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/*
+  Hide the native cursor only where the elastic one actually renders: a fine
+  pointer, and no reduced-motion request. Those two conditions mirror the gates
+  in ElasticCursor, so the two can never disagree and leave no cursor at all.
+*/
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html,
+  body {
+    cursor: none;
+  }
+
+  a,
+  button,
+  [role="button"] {
+    cursor: none;
+  }
 }
 
 .text-gradient {

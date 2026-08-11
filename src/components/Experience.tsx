@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { experience } from "@/data/experience";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function Experience() {
   return (
@@ -40,9 +41,29 @@ export default function Experience() {
                   <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl">
                     {job.summary}
                   </p>
-                  <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl">
-                    {job.highlights}
-                  </p>
+
+                  <ul className="mt-4 flex flex-col gap-2 text-sm md:text-base text-muted-foreground max-w-2xl">
+                    {job.highlights.map((point) => (
+                      <li key={point} className="flex gap-2">
+                        <span className="text-primary mt-1 shrink-0">▹</span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {job.stack && job.stack.length > 0 && (
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {job.stack.map((tech) => (
+                        <Badge
+                          key={tech}
+                          variant="outline"
+                          className="h-auto px-4 py-1.5 rounded-full bg-card/50 text-sm font-medium"
+                        >
+                          {tech}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
