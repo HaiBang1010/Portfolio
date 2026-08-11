@@ -88,8 +88,18 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /*
+    The base colour lives on <html>, not <body>. The Particles layer is fixed at
+    -z-10, so an opaque body background would paint straight over it. Keeping the
+    colour one level up means the page still has a solid backdrop before the
+    canvas paints, without hiding it afterwards.
+  */
+  html {
+    @apply bg-background;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: transparent;
     overflow-x: hidden;
   }
 }

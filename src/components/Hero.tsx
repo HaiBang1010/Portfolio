@@ -46,7 +46,7 @@ export default function Hero() {
                 alt="Tran Phan Hai Bang"
                 className="object-cover"
               />
-              <AvatarFallback className="bg-zinc-900 text-zinc-500 text-sm">
+              <AvatarFallback className="bg-muted text-muted-foreground text-sm">
                 TPHB
               </AvatarFallback>
             </Avatar>
