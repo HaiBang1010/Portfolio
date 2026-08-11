@@ -125,15 +125,15 @@ export const skills: Skill[] = [
     category: "Tools",
   },
   {
-    name: "npm",
-    label: "npm",
-    description: "One install, a thousand dependencies.",
+    name: "figma",
+    label: "Figma",
+    description: "Where the design exists before the code does.",
     category: "Tools",
   },
   {
-    name: "prettier",
-    label: "Prettier",
-    description: "Ends every formatting argument on the team.",
+    name: "claude",
+    label: "Claude",
+    description: "Pair programming with someone who never needs coffee.",
     category: "Tools",
   },
 
