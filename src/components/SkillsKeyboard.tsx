@@ -28,11 +28,14 @@ const TURN_RADIANS = Math.PI / 2;
 const TURN_DURATION_S = 1.2;
 
 /**
- * Shrinks the board so the whole thing fits the canvas. The scene's camera is
- * fixed — neither `setZoom` nor moving the camera object changes the framing —
- * so scaling the model is what actually pulls the outer keys into view.
+ * Absolute scale for the board — authored at 0.5, which crops the outer keys.
+ * The scene's camera is fixed (neither `setZoom` nor moving the camera object
+ * changes the framing), so scaling the model is the only way to fit it.
  */
-const BOARD_SCALE = 0.62;
+const BOARD_SCALE = 0.31;
+
+/** Absolute scale for the text plates. Authored at 2×, which overflows the canvas. */
+const TEXT_PLATE_SCALE = 1.15;
 
 export default function SkillsKeyboard() {
   const prefersReducedMotion = useReducedMotion();
@@ -44,7 +47,6 @@ export default function SkillsKeyboard() {
   const turnRef = useRef<gsap.core.Tween | null>(null);
   /** The authored pose, captured once so the return trip lands exactly on it. */
   const restRotationRef = useRef<number | null>(null);
-  const scaleAppliedRef = useRef(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
   const setSceneText = useCallback(
@@ -91,15 +93,39 @@ export default function SkillsKeyboard() {
       (window as unknown as { splineApp?: Application }).splineApp = app;
     }
 
-    // Guarded: this effect re-runs whenever its deps change, and the scale is
-    // applied as a multiplier, so an unguarded call would shrink it each time.
+    /*
+      Both scales are assigned absolutely rather than multiplied, so running
+      this more than once is harmless — React re-runs the effect on every dep
+      change, and Strict Mode mounts twice in development.
+    */
     const board = app.findObjectByName("keyboard");
-    if (board && !scaleAppliedRef.current) {
-      scaleAppliedRef.current = true;
-      board.scale.x *= BOARD_SCALE;
-      board.scale.y *= BOARD_SCALE;
-      board.scale.z *= BOARD_SCALE;
+    if (board) {
+      board.scale.x = BOARD_SCALE;
+      board.scale.y = BOARD_SCALE;
+      board.scale.z = BOARD_SCALE;
     }
+
+    /*
+      The label and description plates are authored at 2× and run off the side
+      of the canvas on the longest labels — "Tailwind CSS" lost its last two
+      letters. Their geometry width is a baked number and the runtime wraps
+      against it rather than clipping, so the box cannot be widened from here;
+      shrinking the plates is what brings the text back on screen. Matched on
+      their authored scale, since every text object in the scene is named "Text".
+    */
+    app
+      .getAllObjects()
+      .filter(
+        (obj) =>
+          obj.name === "Text" &&
+          (Math.abs(obj.scale.x - 2) < 0.01 ||
+            Math.abs(obj.scale.x - TEXT_PLATE_SCALE) < 0.01),
+      )
+      .forEach((plate) => {
+        plate.scale.x = TEXT_PLATE_SCALE;
+        plate.scale.y = TEXT_PLATE_SCALE;
+        plate.scale.z = TEXT_PLATE_SCALE;
+      });
 
     const onHover = (event: SplineEvent) =>
       selectByTargetName(event.target?.name);
@@ -185,15 +211,20 @@ export default function SkillsKeyboard() {
 
   return (
     <div ref={rootRef} className="w-full flex flex-col items-center">
+      <h2 className="w-full text-base md:text-lg font-bold tracking-widest uppercase text-muted-foreground mb-8 font-mono">
+        Tech Stack
+      </h2>
+
       {/*
-        Full-bleed canvas. The scene frames itself to whatever size the canvas
-        is, so a wider canvas crops in on the board — BOARD_SCALE is what pulls
-        the outer keys back into view.
+        Full-bleed canvas sized in viewport units so it grows with the screen it
+        is centred in. The scene frames itself to whatever size the canvas is, so
+        a larger canvas crops in on the board — BOARD_SCALE pulls the outer keys
+        back into view.
       */}
       <div
         className={cn(
           "relative w-full",
-          isMobile ? "h-[320px]" : "h-[520px] lg:h-[600px]",
+          isMobile ? "h-[45vh]" : "h-[60vh] max-h-[640px]",
         )}
       >
         <Suspense fallback={null}>
