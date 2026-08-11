@@ -19,29 +19,11 @@ const DESELECT_TARGETS = new Set(["body", "platform"]);
 
 const SCENE = "/assets/keyboard.spline";
 
-/**
- * How far the board turns once it stops being the subject. A quarter turn reads
- * as "moving aside"; a full rotation would spend half its time showing the back,
- * where every legend is mirrored and upside down.
- */
 const TURN_RADIANS = Math.PI / 2;
 const TURN_DURATION_S = 1.2;
-
-/**
- * Absolute scale for the board — authored at 0.5, which crops the outer keys.
- * The scene's camera is fixed (neither `setZoom` nor moving the camera object
- * changes the framing), so scaling the model is the only way to fit it.
- */
 const BOARD_SCALE = 0.34;
-
-/**
- * Drops the board toward the lower half of the canvas, leaving the space above
- * it clear for the label and description the scene draws there.
- */
-const BOARD_OFFSET_Y = -60;
-
-/** Absolute scale for the text plates. Authored at 2×, which overflows the canvas. */
-const TEXT_PLATE_SCALE = 1.15;
+const BOARD_OFFSET_Y = -10;
+const TEXT_PLATE_SCALE = 1.5;
 
 export default function SkillsKeyboard() {
   const prefersReducedMotion = useReducedMotion();
@@ -50,6 +32,8 @@ export default function SkillsKeyboard() {
   const [app, setApp] = useState<Application | null>(null);
   const [activeSkill, setActiveSkill] = useState<Skill | null>(null);
   const [isFocusArea, setIsFocusArea] = useState(true);
+  /** Gates the 440KB scene and its WebGL runtime until the reader is near it. */
+  const [shouldLoadScene, setShouldLoadScene] = useState(false);
   const turnRef = useRef<gsap.core.Tween | null>(null);
   /** The authored pose, captured once so the return trip lands exactly on it. */
   const restRotationRef = useRef<number | null>(null);
@@ -99,6 +83,7 @@ export default function SkillsKeyboard() {
       (window as unknown as { splineApp?: Application }).splineApp = app;
     }
 
+
     /*
       Both scales are assigned absolutely rather than multiplied, so running
       this more than once is harmless — React re-runs the effect on every dep
@@ -134,10 +119,8 @@ export default function SkillsKeyboard() {
         plate.scale.z = TEXT_PLATE_SCALE;
       });
 
-    const onHover = (event: SplineEvent) =>
-      selectByTargetName(event.target?.name);
-    const onKeyDown = (event: SplineEvent) =>
-      selectByTargetName(event.target?.name);
+    const onHover = (event: SplineEvent) => selectByTargetName(event.target?.name);
+    const onKeyDown = (event: SplineEvent) => selectByTargetName(event.target?.name);
     const onKeyUp = () => {
       setActiveSkill(null);
       setSceneText("", "");
@@ -170,6 +153,29 @@ export default function SkillsKeyboard() {
     observer.observe(root);
     return () => observer.disconnect();
   }, []);
+
+  /*
+    Start fetching the scene a screen early, so it is ready by the time the
+    reader arrives without competing with the hero for bandwidth and main-thread
+    time on first paint. Once loaded it stays loaded — tearing down a WebGL
+    context and rebuilding it costs far more than keeping it around.
+  */
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || shouldLoadScene) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setShouldLoadScene(true);
+      },
+      // Half a screen of lead time. A full screen would already overlap the
+      // keyboard block while the hero is still on view, which defeats the point.
+      { rootMargin: "50% 0px 0px 0px" },
+    );
+
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [shouldLoadScene]);
 
   /*
     The board holds the pose the scene was authored with while it is the subject,
@@ -231,16 +237,18 @@ export default function SkillsKeyboard() {
       <div
         className={cn(
           "relative w-full",
-          isMobile ? "h-[45vh]" : "h-[60vh] max-h-[640px]",
+          isMobile ? "h-[45vh]" : "h-[80vh] max-h-[800px]",
         )}
       >
-        <Suspense fallback={null}>
-          <Spline
-            scene={SCENE}
-            onLoad={setApp}
-            style={{ width: "100%", height: "100%" }}
-          />
-        </Suspense>
+        {shouldLoadScene && (
+          <Suspense fallback={null}>
+            <Spline
+              scene={SCENE}
+              onLoad={setApp}
+              style={{ width: "100%", height: "100%" }}
+            />
+          </Suspense>
+        )}
       </div>
 
       {/*

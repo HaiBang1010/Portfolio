@@ -234,11 +234,29 @@ export default function Particles({
       rafRef.current = window.requestAnimationFrame(animate);
     };
 
+    /*
+      This canvas repaints the full viewport every frame. While the tab is
+      hidden that work is pure waste, and on return the browser would otherwise
+      have a backlog of frames to catch up on — so park the loop instead.
+    */
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        if (rafRef.current !== null) {
+          window.cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
+        }
+      } else if (rafRef.current === null) {
+        rafRef.current = window.requestAnimationFrame(animate);
+      }
+    };
+
     rafRef.current = window.requestAnimationFrame(animate);
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     // The reference implementation omitted this, so its loop outlived the
     // component. Here the canvas remounts on HMR, which would stack loops.
     return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       if (rafRef.current !== null) {
         window.cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
