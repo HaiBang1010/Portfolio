@@ -21,6 +21,17 @@ const SCENE = "/assets/keyboard.spline";
 
 const TURN_RADIANS = Math.PI / 2;
 const TURN_DURATION_S = 1.2;
+
+/** Two-frame flipbook of the cat's paws, matching the reference project. */
+const BONGO_PARENT = "bongo-cat";
+const BONGO_FRAMES = ["frame-1", "frame-2"] as const;
+const BONGO_FRAME_MS = 100;
+/**
+ * Absolute placement for the cat. Authored at ~3.5×, which at the board's own
+ * 0.34 scale left it towering over the keys and swamping the section text.
+ */
+const BONGO_SCALE = 1.8;
+const BONGO_OFFSET_Y = 260;
 const BOARD_SCALE = 0.34;
 const BOARD_OFFSET_Y = -10;
 const TEXT_PLATE_SCALE = 1.5;
@@ -34,10 +45,11 @@ export default function SkillsKeyboard() {
   const [isFocusArea, setIsFocusArea] = useState(true);
   /** Gates the 440KB scene and its WebGL runtime until the reader is near it. */
   const [shouldLoadScene, setShouldLoadScene] = useState(false);
+  /** The cat only plays over the Projects section, as in the reference. */
+  const [isTypingSection, setIsTypingSection] = useState(false);
   const turnRef = useRef<gsap.core.Tween | null>(null);
   /** The authored pose, captured once so the return trip lands exactly on it. */
   const restRotationRef = useRef<number | null>(null);
-  const rootRef = useRef<HTMLDivElement>(null);
 
   const setSceneText = useCallback(
     (label: string, description: string) => {
@@ -97,6 +109,14 @@ export default function SkillsKeyboard() {
       board.position.y = BOARD_OFFSET_Y;
     }
 
+    const cat = app.findObjectByName(BONGO_PARENT);
+    if (cat) {
+      cat.scale.x = BONGO_SCALE;
+      cat.scale.y = BONGO_SCALE;
+      cat.scale.z = BONGO_SCALE;
+      cat.position.y = BONGO_OFFSET_Y;
+    }
+
     /*
       The label and description plates are authored at 2× and run off the side
       of the canvas on the longest labels — "Tailwind CSS" lost its last two
@@ -135,22 +155,35 @@ export default function SkillsKeyboard() {
   }, [app, selectByTargetName, setSceneText]);
 
   /*
+    Clear the label once the board turns aside. Otherwise whatever key was last
+    hovered stays painted in the scene, and reads upside-down over the sections
+    scrolling past.
+  */
+  useEffect(() => {
+    if (isFocusArea) return;
+    setActiveSkill(null);
+    setSceneText("", "");
+  }, [isFocusArea, setSceneText]);
+
+  /*
     The board sits square while the reader is looking at it, and turns aside
     once they scroll on into Experience. Scrolling back up squares it again.
   */
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+    /*
+      Watches the Tech Stack runway, not the board itself. The board is sticky
+      and never leaves the viewport, so observing it would report "in focus"
+      forever and the turn would never fire.
+    */
+    const runway = document.querySelector("#skills");
+    if (!runway) return;
 
-    // A third on screen is enough to count as "being looked at". Set this much
-    // higher and the block never qualifies — it is taller than the space left
-    // below the fold — so the board would start already turned.
     const observer = new IntersectionObserver(
       ([entry]) => setIsFocusArea(entry.intersectionRatio > 0.3),
       { threshold: [0, 0.15, 0.3, 0.5, 0.75, 1] },
     );
 
-    observer.observe(root);
+    observer.observe(runway);
     return () => observer.disconnect();
   }, []);
 
@@ -161,21 +194,82 @@ export default function SkillsKeyboard() {
     context and rebuilding it costs far more than keeping it around.
   */
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root || shouldLoadScene) return;
+    if (shouldLoadScene) return;
+
+    // Also anchored to the runway rather than the sticky board, which would be
+    // permanently intersecting and so would load the scene immediately.
+    const runway = document.querySelector("#skills");
+    if (!runway) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setShouldLoadScene(true);
       },
-      // Half a screen of lead time. A full screen would already overlap the
-      // keyboard block while the hero is still on view, which defeats the point.
+      // Half a screen of lead time, so the scene is ready on arrival.
       { rootMargin: "50% 0px 0px 0px" },
     );
 
-    observer.observe(root);
+    observer.observe(runway);
     return () => observer.disconnect();
   }, [shouldLoadScene]);
+
+  /*
+    Watches Projects rather than the keyboard: the board is sticky and never
+    leaves the viewport, so it cannot tell us which section the reader is on.
+  */
+  useEffect(() => {
+    const projects = document.querySelector("#projects");
+    if (!projects) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsTypingSection(entry.isIntersecting),
+      { rootMargin: "-30% 0px -30% 0px" },
+    );
+
+    observer.observe(projects);
+    return () => observer.disconnect();
+  }, []);
+
+  /*
+    The cat is a two-frame flipbook: a parent group plus two textured planes,
+    one paw down in each. Alternating their visibility every 100ms reads as
+    typing. Everything is optional — a scene without these objects simply never
+    shows a cat, rather than breaking the board.
+  */
+  useEffect(() => {
+    if (!app) return;
+
+    const parent = app.findObjectByName(BONGO_PARENT);
+    const frames = BONGO_FRAMES.map((name) => app.findObjectByName(name));
+    if (!parent || frames.some((frame) => !frame)) return;
+
+    const hideAll = () => {
+      parent.visible = false;
+      frames.forEach((frame) => {
+        if (frame) frame.visible = false;
+      });
+    };
+
+    if (!isTypingSection || prefersReducedMotion) {
+      hideAll();
+      return;
+    }
+
+    parent.visible = true;
+    let tick = 0;
+    const interval = window.setInterval(() => {
+      frames.forEach((frame, index) => {
+        if (frame) frame.visible = index === tick % frames.length;
+      });
+      tick++;
+    }, BONGO_FRAME_MS);
+
+    // The reference implementation left this interval running past unmount.
+    return () => {
+      window.clearInterval(interval);
+      hideAll();
+    };
+  }, [app, isTypingSection, prefersReducedMotion]);
 
   /*
     The board holds the pose the scene was authored with while it is the subject,
@@ -223,11 +317,7 @@ export default function SkillsKeyboard() {
   }, []);
 
   return (
-    <div ref={rootRef} className="w-full flex flex-col items-center">
-      <h2 className="w-full text-base md:text-lg font-bold tracking-widest uppercase text-muted-foreground mb-8 font-mono">
-        Tech Stack
-      </h2>
-
+    <div className="w-full flex flex-col items-center">
       {/*
         Full-bleed canvas sized in viewport units so it grows with the screen it
         is centred in. The scene frames itself to whatever size the canvas is, so
