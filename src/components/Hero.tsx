@@ -1,34 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { MapPin, Linkedin, Github, Mail } from "lucide-react";
-import { skills } from "@/data/skills";
 import { metadata } from "@/data/metadata";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
 import RoleRotator from "@/components/RoleRotator";
 
 export default function Hero() {
   const { contact } = metadata;
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.05 },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring" as const, stiffness: 300, damping: 24 },
-    },
-  };
 
   return (
     <section className="w-full flex flex-col items-start pt-20">
@@ -123,45 +103,11 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="w-full mt-12"
-      >
+      <div className="w-full mt-12">
         <h2 className="text-base md:text-lg font-bold tracking-widest uppercase text-muted-foreground mb-8 font-mono">
           Tech Stack
         </h2>
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-6 lg:gap-8">
-          {skills.map((skill) => (
-            <motion.div key={skill.name} variants={item}>
-              <Card className="bg-card/50 hover:border-foreground/20 hover:-translate-y-0.5 transition-all">
-                <CardContent className="flex flex-col items-center justify-center p-3">
-                  <div className="w-12 h-12 mb-3 flex items-center justify-center">
-                    {skill.icon ? (
-                      <Image
-                        src={`/icons/${skill.icon}.svg`}
-                        alt={skill.name}
-                        className="w-12 h-12 object-contain"
-                        width={48}
-                        height={48}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded bg-muted flex items-center justify-center text-sm font-mono text-muted-foreground">
-                        {skill.name.charAt(0)}
-                      </div>
-                    )}
-                  </div>
-                  <span className="text-xs md:text-base text-foreground/80">
-                    {skill.name}
-                  </span>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
