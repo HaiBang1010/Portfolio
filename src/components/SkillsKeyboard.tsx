@@ -175,7 +175,7 @@ export default function SkillsKeyboard() {
       and never leaves the viewport, so observing it would report "in focus"
       forever and the turn would never fire.
     */
-    const runway = document.querySelector("#skills");
+    const runway = document.querySelector("[data-keyboard-runway]");
     if (!runway) return;
 
     const observer = new IntersectionObserver(
@@ -198,7 +198,7 @@ export default function SkillsKeyboard() {
 
     // Also anchored to the runway rather than the sticky board, which would be
     // permanently intersecting and so would load the scene immediately.
-    const runway = document.querySelector("#skills");
+    const runway = document.querySelector("[data-keyboard-runway]");
     if (!runway) return;
 
     const observer = new IntersectionObserver(
@@ -214,19 +214,30 @@ export default function SkillsKeyboard() {
   }, [shouldLoadScene]);
 
   /*
-    Watches Projects rather than the keyboard: the board is sticky and never
-    leaves the viewport, so it cannot tell us which section the reader is on.
+    The cat plays for as long as any content section is scrolling over the
+    board — that is, from Experience onward. Watching those sections rather than
+    the keyboard is deliberate: the board is sticky and never leaves the
+    viewport, so it cannot report which section the reader is on.
   */
   useEffect(() => {
-    const projects = document.querySelector("#projects");
-    if (!projects) return;
+    const sections = ["#experience", "#projects"]
+      .map((id) => document.querySelector(id))
+      .filter((el): el is Element => el !== null);
+    if (!sections.length) return;
 
+    const visible = new Set<Element>();
     const observer = new IntersectionObserver(
-      ([entry]) => setIsTypingSection(entry.isIntersecting),
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) visible.add(entry.target);
+          else visible.delete(entry.target);
+        });
+        setIsTypingSection(visible.size > 0);
+      },
       { rootMargin: "-30% 0px -30% 0px" },
     );
 
-    observer.observe(projects);
+    sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
 

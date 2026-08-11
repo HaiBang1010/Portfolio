@@ -51,6 +51,18 @@ export default function Home() {
             sections down by a full screen. z-0 keeps it above the particle layer
             (-z-10) and below the content, which is z-10.
           */}
+          {/*
+            The heading sits outside the sticky track. Were it inside, the track
+            would start here and the board — pinned to the middle of it — would
+            already be riding over the hero on first paint.
+          */}
+          <h2
+            id="skills"
+            className="w-full pt-24 text-base md:text-lg font-bold tracking-widest uppercase text-muted-foreground font-mono"
+          >
+            Tech Stack
+          </h2>
+
           <div className="relative w-full">
             <div className="absolute inset-0 z-0">
               <div className="sticky top-1/2 -translate-y-1/2">
@@ -59,24 +71,15 @@ export default function Home() {
             </div>
 
             {/*
-              The runway the board is centred against: it gets a screen to
-              itself before the sections start scrolling over it. The heading
-              lives here rather than inside the sticky component, which would
-              otherwise carry it down the whole page.
+              Empty runway the board is centred against — it gets a screen to
+              itself before the sections start scrolling over it. The keyboard
+              watches this element to decide when it is still the subject.
             */}
-            <section
-              id="skills"
-              className="relative z-10 w-full min-h-screen pt-24 pointer-events-none"
-            >
-              {/*
-                The section spans a full screen directly over the keyboard, so
-                it must not swallow pointer events — hovering a key has to reach
-                the canvas underneath. Only the heading takes them back.
-              */}
-              <h2 className="pointer-events-auto text-base md:text-lg font-bold tracking-widest uppercase text-muted-foreground font-mono">
-                Tech Stack
-              </h2>
-            </section>
+            <div
+              data-keyboard-runway
+              className="w-full min-h-screen"
+              aria-hidden="true"
+            />
 
             <div className="relative z-10 w-full">
               <section className="w-full min-h-screen flex flex-col justify-center py-24">
