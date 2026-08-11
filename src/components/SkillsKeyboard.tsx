@@ -4,7 +4,7 @@ import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react"
 import type { Application, SPEObject, SplineEvent } from "@splinetool/runtime";
 import { gsap } from "gsap";
 import { useReducedMotion } from "framer-motion";
-import { skillsByName, type Skill } from "@/data/skills";
+import { skills, skillsByName, type Skill } from "@/data/skills";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,13 @@ const TURN_DURATION_S = 1.2;
  * The scene's camera is fixed (neither `setZoom` nor moving the camera object
  * changes the framing), so scaling the model is the only way to fit it.
  */
-const BOARD_SCALE = 0.31;
+const BOARD_SCALE = 0.34;
+
+/**
+ * Drops the board toward the lower half of the canvas, leaving the space above
+ * it clear for the label and description the scene draws there.
+ */
+const BOARD_OFFSET_Y = -60;
 
 /** Absolute scale for the text plates. Authored at 2×, which overflows the canvas. */
 const TEXT_PLATE_SCALE = 1.15;
@@ -103,6 +109,7 @@ export default function SkillsKeyboard() {
       board.scale.x = BOARD_SCALE;
       board.scale.y = BOARD_SCALE;
       board.scale.z = BOARD_SCALE;
+      board.position.y = BOARD_OFFSET_Y;
     }
 
     /*
@@ -237,26 +244,24 @@ export default function SkillsKeyboard() {
       </div>
 
       {/*
-        Mirrors the in-scene text. The 3D label is the primary readout, but this
-        keeps the description readable and gives assistive tech something real —
-        a WebGL canvas exposes nothing to a screen reader.
+        The scene draws the label and description itself, so nothing is rendered
+        here — but a WebGL canvas exposes no text at all, so the same content is
+        announced off-screen for anyone using a screen reader.
       */}
-      <div className="min-h-16 mt-2 text-center px-4" aria-live="polite">
-        {activeSkill ? (
-          <>
-            <p className="text-lg md:text-xl font-semibold text-foreground">
-              {activeSkill.label}
-            </p>
-            <p className="text-sm md:text-base text-muted-foreground">
-              {activeSkill.description}
-            </p>
-          </>
-        ) : (
-          <p className="text-sm md:text-base text-muted-foreground">
-            Hover a key to see what it is.
-          </p>
-        )}
-      </div>
+      <p className="sr-only" aria-live="polite">
+        {activeSkill
+          ? `${activeSkill.label}. ${activeSkill.description}`
+          : "Hover a key to see what it is."}
+      </p>
+
+      {/* Static list of the stack, for assistive tech and for crawlers. */}
+      <ul className="sr-only">
+        {skills.map((skill) => (
+          <li key={skill.name}>
+            {skill.label}: {skill.description}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
