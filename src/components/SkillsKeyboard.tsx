@@ -20,12 +20,19 @@ const DESELECT_TARGETS = new Set(["body", "platform"]);
 const SCENE = "/assets/keyboard.spline";
 
 /**
- * The idle motion sways rather than spinning a full turn: a complete rotation
- * spends half its time showing the back of the board, where every legend reads
- * mirrored and upside down.
+ * How far the board turns once it stops being the subject. A quarter turn reads
+ * as "moving aside"; a full rotation would spend half its time showing the back,
+ * where every legend is mirrored and upside down.
  */
-const SWAY_RADIANS = Math.PI / 5;
-const SWAY_DURATION_S = 6;
+const TURN_RADIANS = Math.PI / 2;
+const TURN_DURATION_S = 1.2;
+
+/**
+ * Shrinks the board so the whole thing fits the canvas. The scene's camera is
+ * fixed — neither `setZoom` nor moving the camera object changes the framing —
+ * so scaling the model is what actually pulls the outer keys into view.
+ */
+const BOARD_SCALE = 0.55;
 
 export default function SkillsKeyboard() {
   const prefersReducedMotion = useReducedMotion();
@@ -34,7 +41,10 @@ export default function SkillsKeyboard() {
   const [app, setApp] = useState<Application | null>(null);
   const [activeSkill, setActiveSkill] = useState<Skill | null>(null);
   const [isFocusArea, setIsFocusArea] = useState(true);
-  const spinRef = useRef<gsap.core.Tween | null>(null);
+  const turnRef = useRef<gsap.core.Tween | null>(null);
+  /** The authored pose, captured once so the return trip lands exactly on it. */
+  const restRotationRef = useRef<number | null>(null);
+  const scaleAppliedRef = useRef(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
   const setSceneText = useCallback(
@@ -81,6 +91,16 @@ export default function SkillsKeyboard() {
       (window as unknown as { splineApp?: Application }).splineApp = app;
     }
 
+    // Guarded: this effect re-runs whenever its deps change, and the scale is
+    // applied as a multiplier, so an unguarded call would shrink it each time.
+    const board = app.findObjectByName("keyboard");
+    if (board && !scaleAppliedRef.current) {
+      scaleAppliedRef.current = true;
+      board.scale.x *= BOARD_SCALE;
+      board.scale.y *= BOARD_SCALE;
+      board.scale.z *= BOARD_SCALE;
+    }
+
     const onHover = (event: SplineEvent) =>
       selectByTargetName(event.target?.name);
     const onKeyDown = (event: SplineEvent) =>
@@ -99,77 +119,85 @@ export default function SkillsKeyboard() {
   }, [app, selectByTargetName, setSceneText]);
 
   /*
-    Once Experience reaches the upper half of the viewport the keyboard stops
-    being the subject and becomes a backdrop with text scrolling over it — dim
-    and shrink it so the copy stays readable.
-
-    This reads scroll position directly rather than using IntersectionObserver:
-    the keyboard is sticky and Experience is tall, so both are almost always
-    "intersecting" and the observer never flips.
+    The board sits square while the reader is looking at it, and turns aside
+    once they scroll on into Experience. Scrolling back up squares it again.
   */
   useEffect(() => {
-    const onScroll = () => {
-      // Backdrop mode for as long as ANY content section overlaps the keyboard,
-      // not just Experience — once Experience scrolls off the top, Projects has
-      // taken its place and the text still needs to stay readable.
-      const sections = ["#experience", "#projects"]
-        .map((id) => document.querySelector(id))
-        .filter((el): el is Element => el !== null);
-      if (!sections.length) return;
+    const root = rootRef.current;
+    if (!root) return;
 
-      const threshold = window.innerHeight * 0.55;
-      const overlapping = sections.some((el) => {
-        const { top, bottom } = el.getBoundingClientRect();
-        return top < threshold && bottom > 0;
-      });
+    // A third on screen is enough to count as "being looked at". Set this much
+    // higher and the block never qualifies — it is taller than the space left
+    // below the fold — so the board would start already turned.
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsFocusArea(entry.intersectionRatio > 0.3),
+      { threshold: [0, 0.15, 0.3, 0.5, 0.75, 1] },
+    );
 
-      setIsFocusArea(!overlapping);
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    observer.observe(root);
+    return () => observer.disconnect();
   }, []);
 
-  // Idle rotation. Paused while a key is selected so reading the label is easy.
+  /*
+    The board holds the pose the scene was authored with while it is the subject,
+    and turns only on the way out — then returns to that exact pose on the way
+    back. Capturing the rest rotation once, on load, is what makes the return
+    trip land where it started instead of drifting a little further each pass.
+  */
   useEffect(() => {
-    if (!app || prefersReducedMotion) return;
+    if (!app) return;
 
     const keyboard: SPEObject | undefined = app.findObjectByName("keyboard");
     if (!keyboard) return;
 
-    const restY = keyboard.rotation.y;
-    keyboard.rotation.y = restY - SWAY_RADIANS / 2;
+    // Captured before anything animates, so "rest" is the authored pose rather
+    // than wherever a half-finished tween happened to leave the board.
+    if (restRotationRef.current === null) {
+      restRotationRef.current = keyboard.rotation.y;
+    }
+    const restY = restRotationRef.current;
+    const targetY = isFocusArea ? restY : restY + TURN_RADIANS;
 
-    spinRef.current = gsap.to(keyboard.rotation, {
-      y: restY + SWAY_RADIANS / 2,
-      duration: SWAY_DURATION_S,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
+    if (prefersReducedMotion) {
+      keyboard.rotation.y = targetY;
+      return;
+    }
+
+    // `overwrite` retargets the in-flight tween, so reversing direction mid-turn
+    // eases from the current angle instead of snapping. No cleanup kill here:
+    // this effect re-runs on every focus change, and killing on the way out
+    // would cancel the very tween it just started.
+    turnRef.current = gsap.to(keyboard.rotation, {
+      y: targetY,
+      duration: TURN_DURATION_S,
+      ease: "power2.inOut",
+      overwrite: true,
     });
+  }, [app, isFocusArea, prefersReducedMotion]);
 
-    return () => {
-      spinRef.current?.kill();
-      spinRef.current = null;
-    };
-  }, [app, prefersReducedMotion]);
-
+  // Only tear the tween down when the component itself goes away.
   useEffect(() => {
-    const spin = spinRef.current;
-    if (!spin) return;
-    if (activeSkill) spin.pause();
-    else spin.resume();
-  }, [activeSkill]);
+    return () => {
+      turnRef.current?.kill();
+      turnRef.current = null;
+    };
+  }, []);
 
   return (
     <div ref={rootRef} className="w-full flex flex-col items-center">
+      {/*
+        Width-capped rather than full-bleed: the scene scales to its canvas, so
+        letting the canvas span the container made the board large enough to
+        crowd the sections above and below it.
+      */}
       <div
         className={cn(
-          "relative w-full transition-all duration-700 ease-out",
-          isMobile ? "h-[320px]" : "h-[460px] lg:h-[520px]",
-          // Backdrop mode: quiet enough for text to sit on top of it.
-          isFocusArea ? "opacity-100 scale-100" : "opacity-30 scale-[0.72]",
+          "relative w-full mx-auto",
+          // The scene frames itself to the canvas, so a short, wide canvas crops
+          // in on a few keys. Keeping it near-square is what fits the whole board.
+          isMobile
+            ? "max-w-sm h-[300px]"
+            : "max-w-lg lg:max-w-xl h-[440px] lg:h-[500px]",
         )}
       >
         <Suspense fallback={null}>
@@ -186,14 +214,7 @@ export default function SkillsKeyboard() {
         keeps the description readable and gives assistive tech something real —
         a WebGL canvas exposes nothing to a screen reader.
       */}
-      <div
-        className={cn(
-          "min-h-16 mt-2 text-center px-4 transition-opacity duration-500",
-          // Hidden in backdrop mode so it never collides with section copy.
-          isFocusArea ? "opacity-100" : "opacity-0 pointer-events-none",
-        )}
-        aria-live="polite"
-      >
+      <div className="min-h-16 mt-2 text-center px-4" aria-live="polite">
         {activeSkill ? (
           <>
             <p className="text-lg md:text-xl font-semibold text-foreground">

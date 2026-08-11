@@ -34,33 +34,17 @@ export default function Home() {
           <Hero />
 
           {/*
-            The keyboard sticks to the middle of the viewport for as long as
-            this wrapper is on screen, so it stays put while Experience and
-            Projects scroll over the top of it. z-0 keeps it above the particle
-            layer (-z-10) but below the content, which is z-10.
-
-            The sticky element is absolutely positioned inside a zero-height
-            track so it reserves no space of its own — otherwise it would push
-            the sections down by its full height.
+            The keyboard belongs to the Tech Stack block and scrolls away with
+            it. z-0 keeps it above the particle layer (-z-10); the sections below
+            are z-10 so nothing of it can bleed over their text.
           */}
-          <div className="relative w-full">
-            <div className="absolute inset-0 z-0">
-              <div className="sticky top-1/2 -translate-y-1/2">
-                <SkillsKeyboard />
-              </div>
-            </div>
+          <div className="relative z-0 w-full mt-8">
+            <SkillsKeyboard />
+          </div>
 
-            {/*
-              Empty runway so the keyboard gets a stretch of screen to itself,
-              at full opacity, before Experience scrolls up and turns it into a
-              backdrop. Its height is what sets how long that moment lasts.
-            */}
-            <div className="h-[75vh] md:h-screen" aria-hidden="true" />
-
-            <div className="relative z-10 space-y-32">
-              <Experience />
-              <Projects />
-            </div>
+          <div className="relative z-10 w-full space-y-32 mt-32">
+            <Experience />
+            <Projects />
           </div>
         </div>
         <Footer />
