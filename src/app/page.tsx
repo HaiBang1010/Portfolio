@@ -65,7 +65,13 @@ export default function Home() {
 
           <div className="relative w-full">
             <div className="absolute inset-0 z-0">
-              <div className="sticky top-1/2 -translate-y-1/2">
+              {/*
+                Positioned with `top` alone, not `top-1/2 -translate-y-1/2`. The
+                transform applies even before the element sticks, so it lifted
+                the board half its own height out of place on first appearance;
+                `top` only takes effect once it actually sticks.
+              */}
+              <div className="sticky top-[20vh]">
                 <SkillsKeyboard />
               </div>
             </div>
@@ -81,7 +87,7 @@ export default function Home() {
               aria-hidden="true"
             />
 
-            <div className="relative z-10 w-full">
+            <div className="relative z-10 w-full ">
               <section className="w-full min-h-screen flex flex-col justify-center py-24">
                 <Experience />
               </section>
