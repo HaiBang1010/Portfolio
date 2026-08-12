@@ -37,7 +37,12 @@ export default function Home() {
           long ones grow instead of clipping.
         */}
         <div className="w-full max-w-6xl lg:max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center">
-          <section className="w-full min-h-screen flex flex-col justify-center py-24">
+          {/*
+            `relative` so the hero's scroll hint can anchor to the bottom of
+            this screen-height box rather than to <main>, which would put it at
+            the very end of the page.
+          */}
+          <section className="relative w-full min-h-screen flex flex-col justify-center py-24">
             <Hero />
           </section>
 
