@@ -42,8 +42,15 @@ export default function RoleRotator() {
       {/*
         Every child occupies the same grid cell, so the track is always sized
         to the widest role and the line below can never move.
+
+        The grid shrink-wraps to the widest role, so `text-center` on an
+        ancestor cannot reach inside it — the cell alignment has to be set
+        here, matching the one-column/two-column switch in Hero.
       */}
-      <span aria-hidden="true" className="grid justify-items-start">
+      <span
+        aria-hidden="true"
+        className="grid justify-items-center lg:justify-items-start"
+      >
         {ROLES.map((role) => (
           <span
             key={role}
@@ -54,7 +61,7 @@ export default function RoleRotator() {
         ))}
 
         {isStatic ? (
-          <span className="col-start-1 row-start-1 relative inline-block whitespace-nowrap text-gradient">
+          <span className="col-start-1 row-start-1 relative inline-block whitespace-nowrap text-gradient items-center">
             {ROLES[0]}
             {/* Same className as the animated bar, so SSR and client agree. */}
             <span className="absolute left-0 -bottom-1 h-0.5 w-full origin-left bg-foreground/40" />
