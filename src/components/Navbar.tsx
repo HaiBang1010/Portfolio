@@ -1,28 +1,64 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useCallback, useState } from "react";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { useLenis } from "lenis/react";
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 
 /** How far down the page the bar stops being transparent. */
 const SOLID_AFTER_PX = 24;
+/** Clears the fixed bar (~60px tall) so section headings are not tucked under it. */
+const SCROLL_OFFSET_PX = -80;
+/** Matches the wheel-scroll feel configured in SmoothScroll. */
+const SCROLL_DURATION_S = 1.2;
+
+const LINKS = [
+  { label: "Work Experience", target: "#experience" },
+  { label: "Projects", target: "#projects" },
+] as const;
 
 export default function Navbar() {
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
+  const lenis = useLenis();
 
   // Reading the motion value rather than a scroll listener: Lenis drives the
   // scroll position, and this stays in step with it without a second listener.
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > SOLID_AFTER_PX);
   });
+
+  const scrollToSection = useCallback(
+    (target: string) => {
+      /*
+        Driving Lenis directly. A plain `href="#id"` hands the jump to the
+        browser, which sets the scroll position in one step — Lenis never sees
+        it, so none of the easing applies and the page snaps.
+      */
+      if (lenis) {
+        lenis.scrollTo(target, {
+          offset: SCROLL_OFFSET_PX,
+          duration: SCROLL_DURATION_S,
+        });
+        return;
+      }
+
+      // Lenis is absent on the first render, and stays absent entirely when the
+      // reader prefers reduced motion — without this the links would do nothing.
+      // `scrollIntoView` takes no offset, so the heading would land under the
+      // fixed bar; `scroll-margin-top` on the section is what holds it clear.
+      const element = document.querySelector<HTMLElement>(target);
+      if (!element) return;
+      element.style.scrollMarginTop = `${-SCROLL_OFFSET_PX}px`;
+      element.scrollIntoView({ block: "start", behavior: "auto" });
+    },
+    [lenis],
+  );
 
   return (
     <motion.nav
@@ -46,26 +82,22 @@ export default function Navbar() {
         </div>
         <NavigationMenu>
           <NavigationMenuList className="gap-2">
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link
-                  href="#experience"
+            {LINKS.map(({ label, target }) => (
+              <NavigationMenuItem key={target}>
+                {/*
+                  A button, not an anchor: this scrolls within the page rather
+                  than navigating anywhere, and the href would re-introduce the
+                  browser's own instant jump.
+                */}
+                <button
+                  type="button"
+                  onClick={() => scrollToSection(target)}
                   className="cursor-can-hover text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
                 >
-                  Work Experience
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link
-                  href="#projects"
-                  className="cursor-can-hover text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
-                >
-                  Projects
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+                  {label}
+                </button>
+              </NavigationMenuItem>
+            ))}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
