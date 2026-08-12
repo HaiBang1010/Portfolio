@@ -34,7 +34,11 @@ export default function Projects() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
           >
-            <Card className="bg-card/40 hover:border-foreground/20 transition-colors overflow-hidden">
+            {/*
+              `bg-background/90` tints only the background colour. Setting
+              `opacity` on the card would fade its text along with it.
+            */}
+            <Card className="bg-background/90 hover:border-foreground/20 transition-colors overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex flex-col gap-1">
                   {/* Hiển thị Subtitle phía trên Title */}

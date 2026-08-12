@@ -26,7 +26,11 @@ export default function Experience() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="bg-card/40 hover:border-foreground/20 transition-colors">
+            {/*
+              `bg-background/90` tints only the background colour. Setting
+              `opacity` on the card would fade its text along with it.
+            */}
+            <Card className="bg-background/90 hover:border-foreground/20 transition-colors">
               <CardContent className="flex flex-col md:flex-row gap-4 md:gap-16 p-6">
                 <div className="md:w-36 shrink-0 text-muted-foreground text-base font-mono mt-1">
                   {job.period}
