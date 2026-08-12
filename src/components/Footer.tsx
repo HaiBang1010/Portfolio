@@ -9,7 +9,7 @@ export default function Footer() {
   const { contact } = metadata;
 
   return (
-    <footer id="contact" className="w-full bg-background/60">
+    <footer id="contact" className="w-full bg-background/60 bottom-0 left-0 right-0">
       <div className="max-w-6xl lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-start gap-10">
         <Separator className="bg-border" />
         <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-6">

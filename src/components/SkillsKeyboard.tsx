@@ -30,11 +30,12 @@ const BONGO_FRAME_MS = 100;
  * Absolute placement for the cat. Authored at ~3.5×, which at the board's own
  * 0.34 scale left it towering over the keys and swamping the section text.
  */
-const BONGO_SCALE = 1.8;
-const BONGO_OFFSET_Y = 260;
-const BOARD_SCALE = 0.34;
+const BONGO_SCALE = 3;
+const BONGO_OFFSET_Y = 480;
+const BONGO_OFFSET_Z = 570;
+const BOARD_SCALE = 0.4;
 const BOARD_OFFSET_Y = -10;
-const TEXT_PLATE_SCALE = 1.5;
+const TEXT_PLATE_SCALE = 1;
 
 export default function SkillsKeyboard() {
   const prefersReducedMotion = useReducedMotion();
@@ -95,7 +96,6 @@ export default function SkillsKeyboard() {
       (window as unknown as { splineApp?: Application }).splineApp = app;
     }
 
-
     /*
       Both scales are assigned absolutely rather than multiplied, so running
       this more than once is harmless — React re-runs the effect on every dep
@@ -115,6 +115,7 @@ export default function SkillsKeyboard() {
       cat.scale.y = BONGO_SCALE;
       cat.scale.z = BONGO_SCALE;
       cat.position.y = BONGO_OFFSET_Y;
+      cat.position.z = BONGO_OFFSET_Z;
     }
 
     /*
