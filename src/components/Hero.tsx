@@ -1,9 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Linkedin, Github, Mail } from "lucide-react";
+import { MapPin, Linkedin, Github, Mail, FileDown } from "lucide-react";
 import { metadata } from "@/data/metadata";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import RoleRotator from "@/components/RoleRotator";
 import HeroScene from "@/components/HeroScene";
@@ -72,6 +73,31 @@ export default function Hero() {
               stack. My focus is shipping complete products end-to-end — React and Next.js
               on the front end, NestJS and Express with Prisma and PostgreSQL behind them.
             </p>
+
+            {/*
+              The one action worth taking on this page, so it gets the only
+              solid button in the column rather than a place in the muted link
+              row below. Opens in a tab instead of downloading: a recruiter can
+              read it straight away, and saving it is still one click from
+              there.
+            */}
+            <div className="flex justify-center lg:justify-start mb-8">
+              {/*
+                Sized past the `lg` variant's 36px: next to a 60px heading the
+                stock button reads as a minor control rather than the call to
+                action.
+              */}
+              <Button
+                asChild
+                size="lg"
+                className="cursor-can-hover rounded-full h-12 px-7 text-base"
+              >
+                <a href={metadata.resumeUrl} target="_blank" rel="noreferrer">
+                  <FileDown className="mr-2 size-5" />
+                  Download CV
+                </a>
+              </Button>
+            </div>
 
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-muted-foreground text-sm">
               <a
