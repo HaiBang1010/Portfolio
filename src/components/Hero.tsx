@@ -59,7 +59,7 @@ export default function Hero() {
                 <span className="text-gradient">Hi, I&apos;m Hai Bang.</span>
                 <Badge
                   variant="outline"
-                  className="ml-4 h-auto px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-sm border-green-500/20 align-middle"
+                  className="h-auto px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-sm border-green-500/20 align-middle"
                 >
                   <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
                   Open to work
